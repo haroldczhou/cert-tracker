@@ -1,0 +1,14 @@
+{
+  "configurations": {
+    "app": {
+      "appLocation": ".",
+      "apiLocation": "api",
+      "outputLocation": "out",
+      "appBuildCommand": "npm run build",
+      "run": "npm run dev",
+      "host": "localhost",
+      "port": 4280,
+      "apiPort": 7071
+    }
+  }
+}

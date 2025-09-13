@@ -3,25 +3,41 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
+    "dev": "next dev",
+    "build": "next build",
+    "export": "echo 'Use `npm run build` (output: export) instead.' && exit 1",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "next lint",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "swa:build": "npm run build",
+    "swa:start": "swa start out --api-location api",
+    "seed:option-a": "bash scripts/seed-option-a.sh"
   },
   "dependencies": {
+    "@azure/communication-email": "^1.0.0",
+    "@azure/cosmos": "^4.5.1",
+    "@azure/storage-blob": "^12.28.0",
+    "lucide-react": "^0.544.0",
+    "next": "15.5.3",
+    "next-pwa": "^5.6.0",
     "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "next": "15.5.3"
+    "react-dom": "19.1.0"
   },
   "devDependencies": {
-    "typescript": "^5",
-    "@types/node": "^20",
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20.19.13",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
     "eslint": "^9",
     "eslint-config-next": "15.5.3",
-    "@eslint/eslintrc": "^3"
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.2.0",
+    "@testing-library/user-event": "^14.6.1",
+    "jsdom": "^24.1.3",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "vitest": "^2.0.5"
   }
 }

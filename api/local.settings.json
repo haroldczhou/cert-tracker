@@ -1,0 +1,18 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "",
+    "FUNCTIONS_WORKER_RUNTIME": "node",
+    "COSMOS_ENDPOINT": "https://certtracker-cosmos.documents.azure.com:443/",
+    "COSMOS_KEY": "",
+    "AZURE_STORAGE_ACCOUNT_NAME": "certtrackerstorage22791",
+    "AZURE_STORAGE_ACCOUNT_KEY": "",
+    "ACS_CONNECTION_STRING": "",
+    "REMINDER_FROM_EMAIL": "",
+    "DEV_DEFAULT_DISTRICT_ID": "district-001",
+    "DEV_ENABLE_SEED": "1"
+  },
+  "Host": {
+    "CORS": "*"
+  }
+}
