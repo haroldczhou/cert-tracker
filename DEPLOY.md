@@ -25,11 +25,12 @@ One-time Setup
    - For Azure AD auth used in `staticwebapp.config.json`:
      - `AZURE_CLIENT_ID`
      - `AZURE_CLIENT_SECRET`
-   - For Functions (copy from `api/local.settings.json` and `.env.example`, use real values):
-     - `COSMOS_ENDPOINT`
-     - `COSMOS_KEY`
-     - `AZURE_STORAGE_ACCOUNT_NAME`
-     - `AZURE_STORAGE_ACCOUNT_KEY`
+ - For Functions (copy from `api/local.settings.json` and `.env.example`, use real values):
+    - `COSMOS_ENDPOINT`
+    - `COSMOS_KEY`
+    - `AZURE_STORAGE_ACCOUNT_NAME`
+    - `AZURE_STORAGE_ACCOUNT_KEY`
+    - `FUNCTIONS_NODE_VERSION` = `20` (ensure API uses Node 20 runtime)
      - Optional dev/demo settings: `DEV_DEFAULT_DISTRICT_ID`, `DEV_ENABLE_SEED`
      - If using email: `ACS_CONNECTION_STRING`, `REMINDER_FROM_EMAIL`
 
@@ -59,4 +60,3 @@ Notes
 - This project uses Next.js `output: 'export'` and builds directly to `out/` with `npm run build`.
 - Don’t commit secrets. Use `/.env.local` locally and SWA Configuration in Azure for production.
 - If Azure created a different workflow file for you, you can keep either one (but not both) to avoid duplicate deployments.
-
