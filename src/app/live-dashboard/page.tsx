@@ -83,7 +83,7 @@ function LiveDashboardContent() {
     } catch (error) {
       console.error('Error loading data:', error);
     }
-  }, []);
+  }, [newStaff.schoolId]);
 
   useEffect(() => {
     setLoading(true);

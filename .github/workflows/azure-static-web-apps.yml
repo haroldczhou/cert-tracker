@@ -44,12 +44,10 @@ jobs:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: upload
-          # Upload prebuilt artifacts to avoid Oryx defaults
-          app_location: "/"                 # still required by the action
-          app_artifact_location: "out"       # prebuilt static export
-          skip_app_build: true
-          api_location: "api"               # contains function.json + dist
-          skip_api_build: true
+          app_location: "/"
+          output_location: "out"
+          api_location: "api"
+          # help the action understand Next static export
           is_static_export: true
           skip_deploy_on_missing_secrets: true
 

@@ -99,6 +99,9 @@ export default function SchoolsAdminPage() {
       <div>
         <h1 className="text-xl font-semibold">Schools</h1>
       </div>
+      {error && (
+        <div className="rounded border p-3 bg-red-50 text-red-700 text-sm">{error}</div>
+      )}
       <div className="rounded border p-3">
         <div className="text-sm font-medium mb-2">Create School</div>
         <div className="flex items-center gap-2">
