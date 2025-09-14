@@ -15,32 +15,9 @@
     {
       "route": "/api/*",
       "allowedRoles": ["anonymous"]
-    },
-    {
-      "route": "/.auth/login/aad",
-      "statusCode": 302,
-      "redirect": "/dashboard"
-    },
-    {
-      "route": "/logout",
-      "redirect": "/.auth/logout"
     }
   ],
   "mimeTypes": {
     ".json": "application/json"
-  },
-  "auth": {
-    "identityProviders": {
-      "azureActiveDirectory": {
-        "registration": {
-          "openIdIssuer": "https://login.microsoftonline.com/common/v2.0",
-          "clientIdSettingName": "AZURE_CLIENT_ID",
-          "clientSecretSettingName": "AZURE_CLIENT_SECRET"
-        },
-        "login": {
-          "loginParameters": ["scope=openid profile email"]
-        }
-      }
-    }
   }
 }
