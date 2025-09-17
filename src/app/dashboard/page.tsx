@@ -11,6 +11,9 @@ export default function Dashboard() {
   const [people, setPeople] = useState<Person[]>([]);
   const [schools, setSchools] = useState<School[]>([]);
   const [loadingData, setLoadingData] = useState(true);
+  const [subOk, setSubOk] = useState<boolean | null>(null);
+  const [subStatus, setSubStatus] = useState<'active' | 'trial' | 'inactive' | null>(null);
+  const [trialDaysLeft, setTrialDaysLeft] = useState<number | null>(null);
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
@@ -19,9 +22,31 @@ export default function Dashboard() {
   }, [loading, isAuthenticated]);
 
   useEffect(() => {
-    if (isAuthenticated && districtId) {
-      loadData();
-    }
+    const checkSubAndLoad = async () => {
+      if (!isAuthenticated || !districtId) return;
+      try {
+        const res = await fetch('/api/getDistrictConfig');
+        if (!res.ok) throw new Error('config');
+        const cfg = await res.json();
+        const status = cfg.subscriptionStatus as 'active' | 'trial' | 'inactive' | null | undefined;
+        const trialEndsAt = cfg.trialEndsAt ? new Date(cfg.trialEndsAt).getTime() : null;
+        const trialActive = status === 'trial' && trialEndsAt !== null && trialEndsAt > Date.now();
+        const ok = status === 'active' || trialActive;
+        setSubOk(ok);
+        setSubStatus(status ?? null);
+        setTrialDaysLeft(trialActive && trialEndsAt ? Math.max(0, Math.ceil((trialEndsAt - Date.now()) / (1000 * 60 * 60 * 24))) : null);
+        if (!ok) {
+          window.location.href = '/paywall';
+          return;
+        }
+        await loadData();
+      } catch (e) {
+        console.error('Subscription check failed', e);
+        setSubOk(false);
+        window.location.href = '/paywall';
+      }
+    };
+    checkSubAndLoad();
   }, [isAuthenticated, districtId]);
 
   const loadData = async () => {
@@ -48,7 +73,7 @@ export default function Dashboard() {
     }
   };
 
-  if (loading) {
+  if (loading || subOk === null) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-lg">Loading...</div>
@@ -73,6 +98,14 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {subStatus === 'trial' && trialDaysLeft !== null && (
+        <div className="bg-blue-50 border-b border-blue-200">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex items-center justify-between text-sm text-blue-900">
+            <div>Trial active: {trialDaysLeft} days remaining</div>
+            <a href="/dashboard/billing" className="text-blue-700 hover:text-blue-900 font-medium">Go to billing</a>
+          </div>
+        </div>
+      )}
       <header className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">

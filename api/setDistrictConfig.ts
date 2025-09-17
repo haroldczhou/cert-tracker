@@ -13,7 +13,15 @@ export async function setDistrictConfig(request: HttpRequest, context: Invocatio
     if (request.method !== 'POST') return ERR.METHOD_NOT_ALLOWED();
     if (!authorizeRole(roles, ['district_admin'])) return ERR.FORBIDDEN();
 
-    const body = (await request.json()) as Partial<{ reminderOffsets: number[]; expiringThresholdDays: number; emailFrom?: string; timezone?: string }>;
+    const body = (await request.json()) as Partial<{ 
+      reminderOffsets: number[];
+      expiringThresholdDays: number;
+      emailFrom?: string;
+      timezone?: string;
+      subscriptionStatus?: 'active' | 'trial' | 'inactive';
+      plan?: string;
+      trialEndsAt?: string | null;
+    }>;
     const cfg = {
       id: `config:${districtId}`,
       type: 'config',
@@ -22,6 +30,9 @@ export async function setDistrictConfig(request: HttpRequest, context: Invocatio
       expiringThresholdDays: body.expiringThresholdDays ?? 30,
       emailFrom: body.emailFrom ?? null,
       timezone: body.timezone ?? null,
+      subscriptionStatus: body.subscriptionStatus ?? null,
+      plan: body.plan ?? null,
+      trialEndsAt: body.trialEndsAt ?? null,
       updatedAt: new Date().toISOString(),
       createdAt: new Date().toISOString(),
     };
@@ -38,4 +49,3 @@ app.http('setDistrictConfig', {
   authLevel: 'anonymous',
   handler: setDistrictConfig,
 });
-

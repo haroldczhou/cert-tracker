@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TrustFrameworkPolicy xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/online/cpim/schemas/2013/06" PolicySchemaVersion="1.0.0.0" TenantId="YOUR_TENANT_NAME.onmicrosoft.com" PolicyId="YOUR_POLICY_PREFIX_SignUpOrSignIn" PublicPolicyUri="http://YOUR_TENANT_NAME.onmicrosoft.com/YOUR_POLICY_PREFIX_SignUpOrSignIn">
+  <BasePolicy>
+    <TenantId>YOUR_TENANT_NAME.onmicrosoft.com</TenantId>
+    <PolicyId>YOUR_POLICY_PREFIX_TrustFrameworkExtensions</PolicyId>
+  </BasePolicy>
+
+  <RelyingParty>
+    <DefaultUserJourney ReferenceId="SignUpOrSignIn" />
+    <TechnicalProfile Id="PolicyProfile">
+      <DisplayName>PolicyProfile</DisplayName>
+      <Protocol Name="OpenIdConnect" />
+      <OutputClaims>
+        <OutputClaim ClaimTypeReferenceId="email" />
+        <OutputClaim ClaimTypeReferenceId="givenName" />
+        <OutputClaim ClaimTypeReferenceId="surname" />
+        <OutputClaim ClaimTypeReferenceId="extension_districtId" />
+      </OutputClaims>
+      <SubjectNamingInfo ClaimType="sub" />
+    </TechnicalProfile>
+  </RelyingParty>
+
+  <UserJourneys>
+    <UserJourney Id="SignUpOrSignIn">
+      <OrchestrationSteps>
+        <!-- Combined sign-in/sign-up using local account first, then social as needed. Tailor to your preference. -->
+        <OrchestrationStep Order="1" Type="CombinedSignInAndSignUp">
+          <ContentDefinitions>
+            <ContentDefinition Id="api.signuporsignin" />
+          </ContentDefinitions>
+          <ClaimsProviderSelections>
+            <ClaimsProviderSelection TargetClaimsExchangeId="LocalAccountSigninEmailExchange" />
+            <ClaimsProviderSelection TargetClaimsExchangeId="SocialIdpMicrosoftExchange" />
+            <ClaimsProviderSelection TargetClaimsExchangeId="SocialIdpGoogleExchange" />
+          </ClaimsProviderSelections>
+          <ClaimsExchanges>
+            <ClaimsExchange Id="LocalAccountSigninEmailExchange" TechnicalProfileReferenceId="SelfAsserted-LocalAccountSignin-Email" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+
+        <!-- If user selects sign-up, enforce validation using SelfAsserted-LocalAccountSignup-Email from extensions -->
+        <OrchestrationStep Order="2" Type="ClaimsExchange">
+          <Preconditions>
+            <Precondition Type="ClaimEquals" ExecuteActionsIf="false">
+              <Value>authenticationSource</Value>
+              <Value>localAccountAuthentication</Value>
+              <Action>SkipThisOrchestrationStep</Action>
+            </Precondition>
+          </Preconditions>
+          <ClaimsExchanges>
+            <ClaimsExchange Id="LocalAccountSignUp" TechnicalProfileReferenceId="SelfAsserted-LocalAccountSignup-Email" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+
+        <!-- Create the account in directory after successful sign-up validation -->
+        <OrchestrationStep Order="3" Type="ClaimsExchange">
+          <Preconditions>
+            <Precondition Type="ClaimsExist" ExecuteActionsIf="false">
+              <Value>newPassword</Value>
+              <Action>SkipThisOrchestrationStep</Action>
+            </Precondition>
+          </Preconditions>
+          <ClaimsExchanges>
+            <ClaimsExchange Id="LocalAccount-Create" TechnicalProfileReferenceId="AAD-UserWriteUsingLogonEmail" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+
+        <!-- Issue token -->
+        <OrchestrationStep Order="4" Type="SendClaims" CpimIssuerTechnicalProfileReferenceId="JwtIssuer" />
+      </OrchestrationSteps>
+      <ClientDefinition ReferenceId="DefaultWeb" />
+    </UserJourney>
+  </UserJourneys>
+</TrustFrameworkPolicy>
+

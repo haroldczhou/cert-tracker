@@ -33,7 +33,8 @@ export function getUserRole(clientPrincipal: ClientPrincipal): string | null {
 }
 
 export function redirectToLogin() {
-  window.location.href = '/.auth/login/aad';
+  // Route to our login chooser so users can pick a provider
+  window.location.href = '/login';
 }
 
 export function redirectToLogout() {
