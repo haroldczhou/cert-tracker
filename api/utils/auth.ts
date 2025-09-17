@@ -1,5 +1,6 @@
 import { HttpRequest } from '@azure/functions';
 import { queryAll } from './cosmos';
+import { readSessionCookie } from './session';
 
 export type UserContext = {
   districtId: string | null;
@@ -11,32 +12,49 @@ export type UserContext = {
 };
 
 export function getUserContext(request: HttpRequest): UserContext | null {
+  // 1) Try SWA principal first (admins or SSO users)
   const cp = request.headers.get('x-ms-client-principal');
-  if (!cp) return null;
-  const user = JSON.parse(Buffer.from(cp, 'base64').toString());
-  const claims: Array<{ typ: string; val: string }> = user.claims || [];
-  let districtId =
-    claims.find((c) => c.typ === 'extension_districtId')?.val || null;
-  if (!districtId && process.env.DEV_DEFAULT_DISTRICT_ID) {
-    districtId = process.env.DEV_DEFAULT_DISTRICT_ID;
-  }
-  const userId =
-    user.userId ||
-    claims.find((c) => c.typ.endsWith('/nameidentifier') || c.typ.endsWith('/objectidentifier'))?.val ||
-    null;
-  const userEmail = user.userDetails || claims.find((c) => c.typ.toLowerCase().includes('email'))?.val || null;
-  const userName = claims.find((c) => c.typ.toLowerCase().includes('name'))?.val || null;
-  const roles = new Set<string>();
-  for (const c of claims) {
-    if (
-      c.typ === 'roles' ||
-      c.typ === 'extension_roles' ||
-      c.typ === 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
-    ) {
-      for (const r of c.val.split(/[;,\s]+/).filter(Boolean)) roles.add(r);
+  if (cp) {
+    const user = JSON.parse(Buffer.from(cp, 'base64').toString());
+    const claims: Array<{ typ: string; val: string }> = user.claims || [];
+    let districtId =
+      claims.find((c) => c.typ === 'extension_districtId')?.val || null;
+    if (!districtId && process.env.DEV_DEFAULT_DISTRICT_ID) {
+      districtId = process.env.DEV_DEFAULT_DISTRICT_ID;
     }
+    const userId =
+      user.userId ||
+      claims.find((c) => c.typ.endsWith('/nameidentifier') || c.typ.endsWith('/objectidentifier'))?.val ||
+      null;
+    const userEmail = user.userDetails || claims.find((c) => c.typ.toLowerCase().includes('email'))?.val || null;
+    const userName = claims.find((c) => c.typ.toLowerCase().includes('name'))?.val || null;
+    const roles = new Set<string>();
+    for (const c of claims) {
+      if (
+        c.typ === 'roles' ||
+        c.typ === 'extension_roles' ||
+        c.typ === 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
+      ) {
+        for (const r of c.val.split(/[;,\s]+/).filter(Boolean)) roles.add(r);
+      }
+    }
+    return { districtId, roles, userId, userEmail, userName, raw: user };
   }
-  return { districtId, roles, userId, userEmail, userName, raw: user };
+
+  // 2) Fall back to app session cookie (staff magic link)
+  const cookie = request.headers.get('cookie');
+  const sess = readSessionCookie(cookie);
+  if (sess) {
+    const roles = new Set<string>(['authenticated', 'staff']);
+    const userId = null; // no directory user id
+    const userEmail = sess.email;
+    const userName = null;
+    let districtId = sess.districtId || null;
+    if (!districtId && process.env.DEV_DEFAULT_DISTRICT_ID) districtId = process.env.DEV_DEFAULT_DISTRICT_ID;
+    return { districtId, roles, userId, userEmail, userName };
+  }
+
+  return null;
 }
 
 export function authorizeRole(roles: Set<string>, allowed: string[]): boolean {

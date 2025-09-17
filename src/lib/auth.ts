@@ -13,11 +13,45 @@ export async function getClientPrincipal(): Promise<ClientPrincipal | null> {
   try {
     const response = await fetch('/.auth/me');
     if (!response.ok) {
+      // Try app session fallback
+      const s = await fetch('/api/sessionMe').then(r => r.ok ? r.json() : null).catch(() => null);
+      if (s?.session?.email && s?.session?.districtId) {
+        const cp: ClientPrincipal = {
+          identityProvider: 'magic',
+          userId: `magic:${s.session.email}`,
+          userDetails: s.session.email,
+          userRoles: s.session.roles || ['authenticated'],
+          claims: [
+            { typ: 'extension_districtId', val: s.session.districtId },
+            { typ: 'email', val: s.session.email },
+            { typ: 'extension_role', val: 'staff' },
+          ],
+        };
+        return cp;
+      }
       return null;
     }
     
     const data = await response.json();
-    return data.clientPrincipal;
+    const cp = data.clientPrincipal;
+    if (cp) return cp;
+    // Fallback if SWA principal missing
+    const s = await fetch('/api/sessionMe').then(r => r.ok ? r.json() : null).catch(() => null);
+    if (s?.session?.email && s?.session?.districtId) {
+      const cp2: ClientPrincipal = {
+        identityProvider: 'magic',
+        userId: `magic:${s.session.email}`,
+        userDetails: s.session.email,
+        userRoles: s.session.roles || ['authenticated'],
+        claims: [
+          { typ: 'extension_districtId', val: s.session.districtId },
+          { typ: 'email', val: s.session.email },
+          { typ: 'extension_role', val: 'staff' },
+        ],
+      };
+      return cp2;
+    }
+    return null;
   } catch (error) {
     console.error('Failed to get client principal:', error);
     return null;

@@ -3,35 +3,18 @@
 import React from 'react';
 import Link from 'next/link';
 
-const providers = [
-  { key: 'b2c', name: 'Email + Password', style: 'bg-blue-600 hover:bg-blue-700' },
-  { key: 'aad', name: 'Sign in with Microsoft', style: 'bg-[#2F2F2F] hover:bg-black' },
-  { key: 'google', name: 'Sign in with Google', style: 'bg-white text-gray-900 border border-gray-300 hover:bg-gray-50' },
-  { key: 'github', name: 'Sign in with GitHub', style: 'bg-gray-800 hover:bg-gray-900' },
-  // Add more if enabled in SWA: { key: 'twitter', name: 'Twitter' }
-];
+// Kept as a simple chooser directing to role-specific pages.
 
 export default function LoginPage() {
-  const postLogin = '/onboarding';
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
       <div className="w-full max-w-md bg-white rounded-lg shadow p-8">
-        <h1 className="text-2xl font-semibold mb-1">Welcome</h1>
-        <p className="text-gray-600 mb-6 text-sm">
-          Choose a sign-in method. After signing in, we verify your email against the pre‑approved staff list.
-        </p>
+        <h1 className="text-2xl font-semibold mb-1">Sign in</h1>
+        <p className="text-gray-600 mb-6 text-sm">Choose the sign‑in path that fits your role.</p>
 
         <div className="space-y-3">
-          {providers.map((p) => (
-            <a
-              key={p.key}
-              className={`block w-full text-center text-white rounded-md py-2 transition-colors ${p.style}`}
-              href={`/.auth/login/${p.key}?post_login_redirect_uri=${encodeURIComponent(postLogin)}`}
-            >
-              {p.name}
-            </a>
-          ))}
+          <Link href="/login/admin" className="block w-full text-center text-white rounded-md py-2 transition-colors bg-[#2F2F2F] hover:bg-black">Admin sign in (Microsoft/Google)</Link>
+          <Link href="/login/staff" className="block w-full text-center text-white rounded-md py-2 transition-colors bg-blue-600 hover:bg-blue-700">Staff sign in (Email)</Link>
         </div>
 
         <div className="mt-6 text-center text-sm text-gray-500">

@@ -17,6 +17,17 @@ export default function OnboardingPage() {
         const res = await fetch('/api/completeRegistration', { method: 'POST' });
         if (res.ok) {
           const data = await res.json().catch(() => ({}));
+          // After linking, if user has multiple schools, let them choose.
+          try {
+            const mineRes = await fetch('/api/listMySchools');
+            if (mineRes.ok) {
+              const mine = await mineRes.json();
+              if (Array.isArray(mine?.items) && mine.items.length > 1) {
+                window.location.href = '/select-school';
+                return;
+              }
+            }
+          } catch {}
           setState({ status: 'linked', message: data?.message || 'Registration complete.' });
           return;
         }
@@ -86,4 +97,3 @@ export default function OnboardingPage() {
     </div>
   );
 }
-

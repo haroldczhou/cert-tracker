@@ -7,7 +7,7 @@ import { Person, School } from '@/types/entities';
 import { ShieldCheck, AlertTriangle, XCircle, Users, Plus } from 'lucide-react';
 
 export default function Dashboard() {
-  const { isAuthenticated, loading, user, districtId } = useAuth();
+  const { isAuthenticated, loading, user, districtId, userRole } = useAuth();
   const [people, setPeople] = useState<Person[]>([]);
   const [schools, setSchools] = useState<School[]>([]);
   const [loadingData, setLoadingData] = useState(true);
@@ -113,11 +113,23 @@ export default function Dashboard() {
               <h1 className="text-3xl font-bold text-gray-900">
                 Certification Tracker
               </h1>
-              <p className="text-sm text-gray-600 mt-1">
-                Welcome back, {user?.userDetails || 'User'}
-              </p>
+              <div className="mt-2">
+                <span className="inline-flex items-center gap-2 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700">
+                  <span className="truncate max-w-[280px]">Signed in as {user?.userDetails || 'user'}</span>
+                  <span className="h-1.5 w-1.5 rounded-full bg-gray-400" />
+                  <span className="uppercase tracking-wide">{userRole || 'staff'}</span>
+                </span>
+              </div>
             </div>
               <div className="flex items-center gap-3">
+                {userRole === 'staff' && (
+                  <button
+                    onClick={() => (window.location.href = '/select-school')}
+                    className="border border-gray-300 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-50 transition-colors"
+                  >
+                    Switch school
+                  </button>
+                )}
                 <button
                   onClick={() => (window.location.href = '/admin/evidence')}
                   className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
