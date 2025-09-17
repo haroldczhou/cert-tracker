@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 
 export default function GetStartedPage() {
   return (
@@ -46,12 +47,11 @@ export default function GetStartedPage() {
           </div>
 
           <div className="mt-10 flex items-center justify-between">
-            <a href="/" className="text-sm text-gray-600 hover:text-gray-800">Back to Home</a>
-            <a href="/login" className="inline-flex items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-white font-medium hover:bg-blue-700">Already have an account? Sign in</a>
+            <Link href="/" className="text-sm text-gray-600 hover:text-gray-800">Back to Home</Link>
+            <Link href="/login" className="inline-flex items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-white font-medium hover:bg-blue-700">Already have an account? Sign in</Link>
           </div>
         </div>
       </div>
     </div>
   );
 }
-

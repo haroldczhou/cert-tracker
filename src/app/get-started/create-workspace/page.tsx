@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 
 export default function CreateWorkspacePage() {
   const [districtId, setDistrictId] = useState('');
@@ -35,7 +36,7 @@ export default function CreateWorkspacePage() {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
       <div className="w-full max-w-lg bg-white rounded-xl shadow border border-gray-200 p-8">
         <h1 className="text-2xl font-semibold text-gray-900">Create a workspace</h1>
-        <p className="mt-2 text-gray-600 text-sm">Choose a unique ID for your district/workspace. Use lowercase letters, numbers, and dashes (e.g., "springfield-usd").</p>
+        <p className="mt-2 text-gray-600 text-sm">Choose a unique ID for your district/workspace. Use lowercase letters, numbers, and dashes (e.g., <code>springfield-usd</code>).</p>
 
         <form onSubmit={submit} className="mt-6 space-y-4">
           <div>
@@ -78,11 +79,10 @@ export default function CreateWorkspacePage() {
         </div>
 
         <div className="mt-8 flex items-center justify-between">
-          <a href="/" className="text-sm text-gray-600 hover:text-gray-800">Back to Home</a>
-          <a href="/login" className="text-sm text-blue-600 hover:underline">Sign in</a>
+          <Link href="/" className="text-sm text-gray-600 hover:text-gray-800">Back to Home</Link>
+          <Link href="/login" className="text-sm text-blue-600 hover:underline">Sign in</Link>
         </div>
       </div>
     </div>
   );
 }
-

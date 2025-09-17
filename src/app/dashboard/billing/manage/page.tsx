@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 
 export default function ManageSubscriptionPage() {
   return (
@@ -17,10 +18,9 @@ export default function ManageSubscriptionPage() {
           >
             Open customer portal
           </button>
-          <a href="/dashboard/billing" className="ml-3 text-gray-700 hover:text-gray-900">Back to billing</a>
+          <Link href="/dashboard/billing" className="ml-3 text-gray-700 hover:text-gray-900">Back to billing</Link>
         </div>
       </div>
     </div>
   );
 }
-

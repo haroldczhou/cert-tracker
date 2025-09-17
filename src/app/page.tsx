@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 
 export default function Home() {
   return (
@@ -16,12 +17,12 @@ export default function Home() {
                 Cert Tracker helps K–12 school districts track educator credentials, automate reminders, and stay audit‑ready.
               </p>
               <div className="mt-8 flex gap-4">
-                <a href="/login" className="inline-flex items-center justify-center rounded-md bg-blue-600 px-5 py-3 text-white text-base font-semibold shadow hover:bg-blue-700">
+                <Link href="/login" className="inline-flex items-center justify-center rounded-md bg-blue-600 px-5 py-3 text-white text-base font-semibold shadow hover:bg-blue-700">
                   Sign in
-                </a>
-                <a href="/get-started" className="inline-flex items-center justify-center rounded-md border border-gray-300 px-5 py-3 text-gray-800 text-base font-semibold hover:bg-gray-50">
+                </Link>
+                <Link href="/get-started" className="inline-flex items-center justify-center rounded-md border border-gray-300 px-5 py-3 text-gray-800 text-base font-semibold hover:bg-gray-50">
                   Get started (Admins)
-                </a>
+                </Link>
               </div>
               <div className="mt-6 text-sm text-gray-500">
                 No account yet? District admins can create a workspace and invite staff.

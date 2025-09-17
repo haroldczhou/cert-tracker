@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
 
 type Config = {
   subscriptionStatus?: 'active' | 'trial' | 'inactive' | null;
@@ -53,13 +54,13 @@ export default function PaywallPage() {
 
         {cfg?.subscriptionStatus !== 'active' && (
           <div className="mt-8 flex gap-3 flex-wrap">
-            <a href="/get-started" className="inline-flex items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-white font-medium hover:bg-blue-700">Get started</a>
-            <a
+            <Link href="/get-started" className="inline-flex items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-white font-medium hover:bg-blue-700">Get started</Link>
+            <Link
               href="/dashboard/billing"
               className="inline-flex items-center justify-center rounded-md border border-gray-300 px-4 py-2 text-gray-800 font-medium hover:bg-gray-50"
             >
               Start subscription
-            </a>
+            </Link>
           </div>
         )}
 

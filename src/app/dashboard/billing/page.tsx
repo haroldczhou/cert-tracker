@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
 
 type Config = {
   subscriptionStatus?: 'active' | 'trial' | 'inactive' | null;
@@ -75,8 +76,8 @@ export default function BillingPage() {
             >
               {busy ? 'Starting…' : 'Start subscription'}
             </button>
-            <a href="/dashboard" className="ml-3 text-gray-700 hover:text-gray-900">Cancel</a>
-            <a href="/dashboard/billing/manage" className="ml-6 text-blue-600 hover:underline">Manage subscription</a>
+            <Link href="/dashboard" className="ml-3 text-gray-700 hover:text-gray-900">Cancel</Link>
+            <Link href="/dashboard/billing/manage" className="ml-6 text-blue-600 hover:underline">Manage subscription</Link>
           </div>
 
           {message && (

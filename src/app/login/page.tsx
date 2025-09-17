@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 
 const providers = [
   { key: 'b2c', name: 'Email + Password', style: 'bg-blue-600 hover:bg-blue-700' },
@@ -34,11 +35,11 @@ export default function LoginPage() {
         </div>
 
         <div className="mt-6 text-center text-sm text-gray-500">
-          District admin? <a href="/get-started" className="text-blue-600 hover:underline">Get started</a> or <a href="/get-started/create-workspace" className="text-blue-600 hover:underline">create a workspace</a>.
+          District admin? <Link href="/get-started" className="text-blue-600 hover:underline">Get started</Link> or <Link href="/get-started/create-workspace" className="text-blue-600 hover:underline">create a workspace</Link>.
         </div>
 
         <div className="mt-4 text-center">
-          <a href="/" className="text-sm text-gray-600 hover:text-gray-800">Back to Home</a>
+          <Link href="/" className="text-sm text-gray-600 hover:text-gray-800">Back to Home</Link>
         </div>
       </div>
     </div>
