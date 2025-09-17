@@ -57,8 +57,14 @@ export default function StaffLoginPage() {
           <div className={`mt-4 text-sm ${status === 'error' ? 'text-red-700' : 'text-gray-700'}`}>{message}</div>
         )}
         {devLink && (
-          <div className="mt-2 text-xs text-gray-500">
-            Dev: <a className="text-blue-600 underline" href={devLink}>Open magic link</a>
+          <div className="mt-2 text-xs text-gray-500 flex items-center gap-2">
+            <span>Dev:</span>
+            <button
+              onClick={() => { if (devLink) window.location.href = devLink; }}
+              className="text-blue-600 underline"
+            >
+              Open magic link
+            </button>
           </div>
         )}
 

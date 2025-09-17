@@ -9,6 +9,9 @@
     "AZURE_STORAGE_ACCOUNT_KEY": "",
     "ACS_CONNECTION_STRING": "",
     "REMINDER_FROM_EMAIL": "",
+    "MAGIC_FROM_EMAIL": "",
+    "APP_SESSION_SECRET": "dev-change-me-please",
+    "PUBLIC_BASE_URL": "http://localhost:4280",
     "DEV_DEFAULT_DISTRICT_ID": "district-001",
     "DEV_ENABLE_SEED": "1"
   },

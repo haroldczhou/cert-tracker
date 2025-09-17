@@ -149,7 +149,7 @@ export default function Dashboard() {
                   Schools
                 </button>
                 <button
-                  onClick={() => (window.location.href = '/.auth/logout')}
+                  onClick={() => (window.location.href = (user?.identityProvider === 'magic' ? '/api/sessionLogout' : '/.auth/logout'))}
                   className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors"
                 >
                   Logout

@@ -1,12 +1,12 @@
-import jwt from 'jsonwebtoken';
+import crypto from 'node:crypto';
 
 const defaultExpSeconds = 15 * 60; // 15 minutes
 
 export type MagicClaims = {
   email: string;
   districtId: string;
-  exp?: number;
-  iat?: number;
+  exp: number; // epoch seconds
+  iat: number; // epoch seconds
 };
 
 function getSecret() {
@@ -15,17 +15,37 @@ function getSecret() {
   return secret;
 }
 
+function b64url(input: Buffer | string) {
+  const buf = Buffer.isBuffer(input) ? input : Buffer.from(input);
+  return buf.toString('base64').replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+}
+
 export function signMagicToken(payload: { email: string; districtId: string; expSeconds?: number }) {
-  const secret = getSecret();
   const { email, districtId, expSeconds = defaultExpSeconds } = payload;
-  const token = jwt.sign({ email, districtId } as MagicClaims, secret, { expiresIn: expSeconds });
-  return token;
+  const iat = Math.floor(Date.now() / 1000);
+  const exp = iat + expSeconds;
+  const header = { alg: 'HS256', typ: 'JWT' };
+  const claims: MagicClaims = { email, districtId, iat, exp };
+  const part1 = b64url(JSON.stringify(header));
+  const part2 = b64url(JSON.stringify(claims));
+  const data = `${part1}.${part2}`;
+  const sig = crypto.createHmac('sha256', getSecret()).update(data).digest();
+  const part3 = b64url(sig);
+  return `${data}.${part3}`;
 }
 
 export function verifyMagicToken(token: string): MagicClaims | null {
   try {
-    const secret = getSecret();
-    return jwt.verify(token, secret) as MagicClaims;
+    const [p1, p2, p3] = token.split('.');
+    if (!p1 || !p2 || !p3) return null;
+    const data = `${p1}.${p2}`;
+    const expected = b64url(crypto.createHmac('sha256', getSecret()).update(data).digest());
+    if (expected !== p3) return null;
+    const claims = JSON.parse(Buffer.from(p2, 'base64').toString()) as MagicClaims;
+    if (!claims?.exp || !claims?.email || !claims?.districtId) return null;
+    const now = Math.floor(Date.now() / 1000);
+    if (now > claims.exp) return null;
+    return claims;
   } catch {
     return null;
   }
@@ -59,4 +79,3 @@ export function readSessionCookie(cookieHeader: string | null | undefined): { em
     return null;
   }
 }
-
